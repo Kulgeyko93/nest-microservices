@@ -1,5 +1,5 @@
 import { MongooseModuleAsyncOptions } from '@nestjs/mongoose';
-import { ConfigService } from '@nestjs/config'
+import { ConfigModule, ConfigService } from '@nestjs/config'
 
 export const getMondoConfig = (): MongooseModuleAsyncOptions => {
   return {
@@ -7,10 +7,10 @@ export const getMondoConfig = (): MongooseModuleAsyncOptions => {
       uri: getMongoString(configService),
     }),
     inject: [ConfigService],
-    imports: [ConfigService],
+    imports: [ConfigModule],
   }
 }
 
 const getMongoString = (configService: ConfigService) => (
-  `mongo://${configService.get('MONGO_HOST')}:${configService.get('MONGO_PORT')}}`
-)
+  `mongodb://${configService.get('MONGO_HOST')}:${configService.get('MONGO_PORT')}/${configService.get('MONGO_DATABASE')}`
+);

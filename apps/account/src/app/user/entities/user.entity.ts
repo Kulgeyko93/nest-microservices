@@ -10,10 +10,10 @@ export class UserEntity implements IUser {
 
   constructor(user: IUser) {
     this._id = user._id;
+    this.passwordHash = user.passwordHash;
     this.displayName = user.displayName;
     this.email = user.email;
     this.role = user.role;
-    
   }
 
   public async setPassword(password: string) {
