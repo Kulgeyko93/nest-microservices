@@ -2,8 +2,8 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { UserRole } from '@microservices/interfaces';
 import { UserEntity } from '../user/entities/user.entity';
 import { UserRepository } from '../user/repositories/user.repository';
-import { RegisterDto } from './dto/register.dto';
 import { JwtService } from '@nestjs/jwt';
+import { AccountRegister } from '@microservices/contracts';
 
 
 @Injectable()
@@ -13,7 +13,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async register({email, password, displayName}: RegisterDto) {
+  async register({email, password, displayName}: AccountRegister.Request) {
     const existUser = await this.userRepository.findUser(email);
     if (existUser) {
       throw new Error('User exists');
