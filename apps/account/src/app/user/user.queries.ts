@@ -12,8 +12,8 @@ export class UserQueries {
   @RMQValidate()
   async userInfo(@Body() { id }: AccountUserInfo.Request): Promise<AccountUserInfo.Response> {
     const user = await this.userRepository.findUserById(id);
-    const userEntity = new UserEntity(user).getPublicProfile();
-    return { user: userEntity };
+    const profile = new UserEntity(user).getPublicProfile();
+    return { user: profile };
   }
 
   @RMQRoute(AccountUserCourses.topic)
