@@ -1,26 +1,29 @@
 import { Body, Controller } from '@nestjs/common';
 import { RMQRoute, RMQValidate } from 'nestjs-rmq';
-import { AccountChangeProfile } from '@microservices/contracts';
-import { UserRepository } from './repositories/user.repository';
-import { NotFoundException } from '@nestjs/common/exceptions';
-import { UserEntity } from './entities/user.entity';
+import { AccountBuyCourse, AccountChangeProfile, AccountCheckPayment } from '@microservices/contracts';
+import { UserService } from './user.service';
 
 @Controller()
 export class UserCommands {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userService: UserService,
+  ) {}
 
   @RMQRoute(AccountChangeProfile.topic)
   @RMQValidate()
-  async userInfo(@Body() { user, id }: AccountChangeProfile.Request): Promise<AccountChangeProfile.Response> {
-    const existedUser = await this.userRepository.findUserById(id);
+  async changeProfile(@Body() { user, id }: AccountChangeProfile.Request): Promise<AccountChangeProfile.Response> {
+    return await this.userService.changeProfile(user, id);
+  }
 
-    if (!existedUser) {
-      throw new NotFoundException('User doesn\'t exist');
-    }
+  @RMQRoute(AccountBuyCourse.topic)
+  @RMQValidate()
+  async buyCourse(@Body() { userId, courseId }: AccountBuyCourse.Request): Promise<AccountBuyCourse.Response> {
+    return await this.userService.buyCourse(userId, courseId);
+  }
 
-    const userEntity = new UserEntity(existedUser).updateProfile(user.displayName);
-    await this.userRepository.updateUser(userEntity);
-
-    return {};
+  @RMQRoute(AccountCheckPayment.topic)
+  @RMQValidate()
+  async checkPayment(@Body() { userId, courseId }: AccountCheckPayment.Request): Promise<AccountCheckPayment.Response> {
+    return await this.userService.checkPayment(userId, courseId);
   }
 }
