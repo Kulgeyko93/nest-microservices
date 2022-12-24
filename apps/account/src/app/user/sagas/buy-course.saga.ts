@@ -2,7 +2,7 @@ import { RMQService } from "nestjs-rmq";
 import { PurchaseState } from "@microservices/interfaces";
 import { UserEntity } from "../entities/user.entity";
 import { BuyCourseSagaState } from "./buy-course.state";
-import { BuyCourseSagaStateStarted } from "./buy-course.steps";
+import { BuyCourseSagaStateCanceld, BuyCourseSagaStatePurchased, BuyCourseSagaStateWaitingForPayment, BuyCourseSagaStateStarted } from "./buy-course.steps";
 
 export class BuyCourseSaga {
   private state: BuyCourseSagaState;
@@ -12,18 +12,21 @@ export class BuyCourseSaga {
   setState(courseId: string, state: PurchaseState) {
     switch(state) {
       case PurchaseState.Started:
-        this.state = new BuyCourseSagaStateStarted()
+        this.state = new BuyCourseSagaStateStarted();
         break;
       case PurchaseState.WaitingForPayment:
+        this.state === new BuyCourseSagaStateWaitingForPayment();
         break;
       case PurchaseState.Purchased: 
+        this.state === new BuyCourseSagaStatePurchased();
         break
-      case PurchaseState.Canceled: 
+      case PurchaseState.Canceled:
+      this.state === new BuyCourseSagaStateCanceld();
         break
     }
 
     this.state.setContext(this);
-    this.user.updateCourseStatus(courseId, state);
+    this.user.setCourseStatus(courseId, state);
   }
 
   getState() {
