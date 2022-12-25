@@ -54,15 +54,15 @@ export class BuyCourseSagaStateWaitingForPayment extends BuyCourseSagaState {
 
     if (status === 'canceled') {
       this.saga.setState(this.saga.courseId, PurchaseState.Canceled);
-      return { user: this.saga.user, status }
+      return { user: this.saga.user, status: 'canceled' }
     }
 
     if (status === 'success') {
-      return { user: this.saga.user, status }
+      return { user: this.saga.user, status: 'success' }
     }
 
     this.saga.setState(this.saga.courseId, PurchaseState.Purchased)
-    return { user: this.saga.user, status }
+    return { user: this.saga.user, status: 'progress' }
   }
 
   public cancel(): Promise<{ user: UserEntity; }> {
