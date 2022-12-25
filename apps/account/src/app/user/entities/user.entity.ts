@@ -29,7 +29,7 @@ export class UserEntity implements IUser {
   }
 
   public setCourseStatus(courseId: string, state: PurchaseState) {
-    const exist = this.courses.find((course) => course._id === courseId);
+    const exist = this.courses.find((course) => course.courseId === courseId);
     if (!exist) {
       this.courses.push({
         courseId,
@@ -39,11 +39,11 @@ export class UserEntity implements IUser {
       return this;
     }
     if (state === PurchaseState.Canceled) {
-      this.courses.filter((course) => course._id !== courseId);
+      this.courses.filter((course) => course.courseId !== courseId);
       return this;
     }
     this.courses = this.courses.map((course) => {
-      if (course._id !== courseId) return course;
+      if (course.courseId !== courseId) return course;
 
       course.purchaseState = state;
       return course;
@@ -54,6 +54,10 @@ export class UserEntity implements IUser {
       data: { courseId, userId: this._id, state }
     });
     return this;
+  }
+
+  public getCourseState(courseId: string): PurchaseState {
+    return this.courses.find(c => c.courseId === courseId)?.purchaseState ?? PurchaseState.Started;
   }
 
   public async setPassword(password: string) {
