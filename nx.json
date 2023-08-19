@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
-  "npmScope": "microservices",
+  "npmScope": "chat",
   "affected": {
     "defaultBase": "master"
   },
@@ -14,7 +14,7 @@
           "test",
           "e2e"
         ],
-        "accessToken": "YmZiOWJiYTgtYTAwZS00NmUzLTg0MGItMWNhZmVlNzFmZDNmfHJlYWQtd3JpdGU="
+        "accessToken": "YmNjNjQwZWUtZGI4Ny00MjNkLThjYTUtODhjNzcwM2IzMjFlfHJlYWQtd3JpdGU="
       }
     }
   },
