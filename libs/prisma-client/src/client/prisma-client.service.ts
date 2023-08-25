@@ -1,34 +1,28 @@
-import {INestApplication, Logger, OnModuleInit} from '@nestjs/common';
-import {PrismaClient, Prisma} from '@prisma/prisma-api-client';
-// import {InjectPinoLogger, PinoLogger} from 'nestjs-pino';
+import { Logger, OnModuleInit } from '@nestjs/common';
+import { Prisma, PrismaClient } from "@prisma/client";
+
 
 export class PrismaClientService extends PrismaClient implements OnModuleInit {
-    constructor(
-        // @InjectPinoLogger(PrismaClientService.name) private readonly pinoLogger: PinoLogger,
-    ) {
+    private logger: Logger;
+
+    constructor() {
         super();
+        this.logger = new Logger();
     }
 
     async onModuleInit() {
-        // try {
-        //     this.pinoLogger.debug('Starting database connection', 'PrismaClientService');
-        //     await this.$connect();
-        //     this.pinoLogger.info('Established database connection', 'PrismaClientService');
-        // } catch (error) {
-        //     if (error instanceof Prisma.PrismaClientInitializationError) {
-        //         this.pinoLogger.error(
-        //             `Database connection failed: ${error.message}`,
-        //             'PrismaClientService'
-        //         );
-        //     }
-        //     throw error;
-        // }
-    }
-
-    async enableShutdownHooks(app: INestApplication) {
-        // this.$on('beforeExit', async () => {
-        //     this.pinoLogger.info('Closing database connection', 'PrismaClientService')
-        //     await app.close();
-        // });
+        try {
+            this.logger.debug('Starting database connection', 'PrismaClientService');
+            await this.$connect();
+            this.logger.log('Established database connection', 'PrismaClientService');
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientInitializationError) {
+                this.logger.error(
+                    `Database connection failed: ${error.message}`,
+                    'PrismaClientService'
+                );
+            }
+            throw error;
+        }
     }
 }
