@@ -14,7 +14,7 @@
           "test",
           "e2e"
         ],
-        "accessToken": "YmNjNjQwZWUtZGI4Ny00MjNkLThjYTUtODhjNzcwM2IzMjFlfHJlYWQtd3JpdGU="
+        "accessToken": "ZTE2Zjg4YzItMGY5MC00ZGE0LWExMDMtZTk2NmViOGNjN2QwfHJlYWQtd3JpdGU="
       }
     }
   },
@@ -56,5 +56,5 @@
     ],
     "sharedGlobals": []
   },
-  "defaultProject": "account"
+  "defaultProject": "chat"
 }

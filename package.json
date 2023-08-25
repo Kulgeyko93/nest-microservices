@@ -5,15 +5,24 @@
   "scripts": {
     "start": "nx serve",
     "build": "nx build",
-    "test": "nx test"
+    "test": "nx test",
+    "prisma:migrate:dev": "prisma migrate dev",
+    "prisma:migrate:reset": "prisma migrate reset",
+    "prisma:db:push": "npx prisma db push",
+    "prisma:db:seed": "prisma db seed",
+    "prisma:validate": "prisma validate",
+    "prisma:format": "prisma format",
+    "prisma:generate": "prisma generate",
+    "prisma-generate": "npx prisma generate --schema=./libs/prisma-client/prisma/schema.prisma env=./envs/.acount-model.env",
+    "prisma-migrate": "dotenv -e ./envs/.acount-model.env -- npx prisma migrate dev --schema=./libs/prisma-client/prisma/schema.prisma "
   },
   "private": true,
   "dependencies": {
     "@nestjs/common": "^9.0.0",
-    "@nestjs/config": "^3.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
     "@prisma/client": "^5.1.1",
+    "dotenv-cli": "^7.3.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.0.0",
     "tslib": "^2.3.0"
