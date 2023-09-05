@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@chat/interfaces": ["libs/interfaces/src/index.ts"]
+      "@chat/interfaces": ["libs/interfaces/src/index.ts"],
+      "@chat/prisma-client": ["libs/prisma-client/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

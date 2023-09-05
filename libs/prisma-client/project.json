@@ -19,46 +19,22 @@
         "passWithNoTests": true
       }
     },
-    "prisma-generate": {
-      "executor": "@nx-tools/nx-prisma:generate",
+    "migrate-dev": {
+      "command": "npx prisma migrate dev --schema ./src/lib/prisma/schema.prisma",
       "options": {
-        "schema": "prisma/schema.prisma"
+        "cwd": "libs/db"
       }
     },
-    "prisma-migrate": {
-      "executor": "@nx-tools/nx-prisma:migrate",
+    "db-push": {
+      "command": "npx prisma db push --schema ./src/lib/prisma/schema.prisma",
       "options": {
-        "schema": "prisma/schema.prisma"
+        "cwd": "libs/db"
       }
     },
-    "prisma-pull": {
-      "executor": "@nx-tools/nx-prisma:pull",
+    "gen-client": {
+      "command": "npx prisma generate --schema ./src/lib/prisma/schema.prisma",
       "options": {
-        "schema": "prisma/schema.prisma"
-      }
-    },
-    "prisma-push": {
-      "executor": "@nx-tools/nx-prisma:push",
-      "options": {
-        "schema": "prisma/schema.prisma"
-      }
-    },
-    "prisma-deploy": {
-      "executor": "@nx-tools/nx-prisma:deploy",
-      "options": {
-        "schema": "prisma/schema.prisma"
-      }
-    },
-    "prisma-status": {
-      "executor": "@nx-tools/nx-prisma:status",
-      "options": {
-        "schema": "prisma/schema.prisma"
-      }
-    },
-    "prisma-studio": {
-      "executor": "@nx-tools/nx-prisma:studio",
-      "options": {
-        "schema": "prisma/schema.prisma"
+        "cwd": "libs/db"
       }
     }
   },
