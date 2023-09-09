@@ -1,26 +1,47 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { UserRepository } from './../user/repositories/user.repository';
+import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { RegisterUserDto } from "./dto/register-user.dto";
+import { UserEntity } from "../user/entites/user.entity";
+import { Roles } from "@prisma/client";
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  constructor(
+  private readonly userRepository: UserRepository,
+  ) {}
+  async register({ email, password, name }: RegisterUserDto) {
+    const existUser = await this.userRepository.findOneByEmail(email);
+
+    if (existUser) {
+      throw new HttpException('User exists', HttpStatus.BAD_REQUEST);
+    }
+
+    const newUserEntity = await new UserEntity({
+      email,
+      name,
+      password: '',
+      role: Roles.USER,
+    }).setPassword(password);
+
+    const newUser = await this.userRepository.create(newUserEntity);
+
+    return { email: newUser.email }
   }
 
-  findAll() {
-    return `This action returns all auth`;
-  }
+  async validate(email: string, password: string ) {
+    const user = await this.userRepository.findOneByEmail(email);
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
+    if (!user) {
+      throw new BadRequestException('Uncorrect email or password');
+    }
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
+    const userEntity = new UserEntity(user);
+    const isCorrectPassword = await userEntity.validatePassword(password);
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+    if (!isCorrectPassword) {
+      throw new BadRequestException('Uncorrect email or password');
+    }
+
+    return { id: user.id };
   }
 }

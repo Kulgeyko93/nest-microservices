@@ -7,5 +7,6 @@ import { PrismaClientService } from '@chat/prisma-client';
   imports: [],
   controllers: [UserController],
   providers: [UserRepository, PrismaClientService],
+  exports: [UserRepository],
 })
 export class UserModule {}

@@ -10,10 +10,10 @@ export class UserEntity implements User {
     createdAt: Date;
     updatedAt: Date;
 
-    constructor(user: User) {
+    constructor(user: Pick<User, 'email'| 'name' | 'role' | 'password'>) {
         this.email = user.email;
-        this.name = user.name;
         this.password = user.password;
+        this.name = user.name;
         this.role = user.role;
     }
 
