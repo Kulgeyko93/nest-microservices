@@ -14,7 +14,6 @@ import { PrismaClientModule } from "@chat/prisma-client";
     PrismaClientModule,
     AuthModule,
     UserModule
-    
   ],
 })
 export class AppModule {}

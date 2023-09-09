@@ -1,42 +1,30 @@
 import {
+  BadRequestException,
   Controller,
   Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
+  HttpException,
+  HttpStatus,
+  InternalServerErrorException,
+  NotFoundException,
+  Query,
 } from '@nestjs/common';
-import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UserRepository } from './repositories/user.repository';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
-
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
-  }
-
+  constructor(private readonly userRepository: UserRepository) {}
   @Get()
-  findAll() {
-    return this.userService.findAll();
-  }
+  async findOne(@Query('email') email: string) {
+    try {
+      if (!email?.trim()) throw new BadRequestException();
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
-  }
+      const user = await this.userRepository.findOneByEmail(email);
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+      if (!user) throw new NotFoundException('User doesn\'t exist');
+  
+      return user;
+    } catch (error) {
+      throw new HttpException(error, error.status);
+    }
   }
 }
