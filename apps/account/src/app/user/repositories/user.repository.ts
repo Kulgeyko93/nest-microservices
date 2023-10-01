@@ -15,6 +15,14 @@ export class UserRepository {
     return newUser;
   }
 
+  findOneById(id: string) {
+    return this.prisma.user.findFirst({
+      where: {
+        id
+      }
+    });
+  }
+
   findOneByEmail(email: string) {
     return this.prisma.user.findFirst({
       where: {

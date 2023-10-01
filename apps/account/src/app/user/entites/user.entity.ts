@@ -11,11 +11,12 @@ export class UserEntity implements User {
     updatedAt: Date;
     refreshToken: string;
 
-    constructor(user: Pick<User, 'email'| 'name' | 'role' | 'password'>) {
+    constructor(user: Pick<User, 'email'| 'name' | 'role' | 'password' | 'refreshToken'>) {
         this.email = user.email;
         this.password = user.password;
         this.name = user.name;
         this.role = user.role;
+        this.refreshToken = user.refreshToken;
     }
 
     public async setPassword(password: string) {
@@ -26,5 +27,9 @@ export class UserEntity implements User {
 
     public validatePassword(password: string) {
         return compare(password, this.password);
+    }
+
+    public validateRefreshToken(refreshToken: string) {
+        return compare(refreshToken, this.refreshToken);
     }
 }

@@ -1,4 +1,4 @@
-import { genSalt, hash } from 'bcrypt';
+import { compare, genSalt, hash } from 'bcrypt';
 import { User, Roles } from "@prisma/client";
 
 export class UserUpdateEntity implements User {
@@ -15,5 +15,9 @@ export class UserUpdateEntity implements User {
         const salt = await genSalt(15);
         this.refreshToken = await hash(refreshToken, salt);
         return this;
+    }
+
+    public validatePassword(password: string) {
+        return compare(password, this.password);
     }
 }

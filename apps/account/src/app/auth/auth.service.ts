@@ -1,9 +1,9 @@
 import { ConfigService } from '@nestjs/config';
 import { UserRepository } from './../user/repositories/user.repository';
-import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { RegisterUserDto } from "./dto/register-user.dto";
 import { UserEntity } from "../user/entites/user.entity";
-import { Roles } from "@prisma/client";
+import { Roles, User } from "@prisma/client";
 import { JwtService } from "@nestjs/jwt";
 import { UserUpdateEntity } from "../user/entites/user-update.entity";
 
@@ -26,11 +26,12 @@ export class AuthService {
       name,
       password: '',
       role: Roles.USER,
+      refreshToken: null,
     }).setPassword(password);
 
     const newUser = await this.userRepository.create(newUserEntity);
 
-    const tokens = await this.getTokens(newUser.id, newUser.email);
+    const tokens = await this.getTokens({id: newUser.id, email: newUser.email });
 
     await this.updateRefreshToken(newUser.id, tokens.refreshToken)
 
@@ -54,7 +55,7 @@ export class AuthService {
       throw new BadRequestException('Password is incorrect');
     }
 
-    const tokens = await this.getTokens(user.id, user.email);
+    const tokens = await this.getTokens({id: user.id, email });
     await this.updateRefreshToken(user.id, tokens.refreshToken);
     return tokens;
   }
@@ -70,11 +71,11 @@ export class AuthService {
     await this.userRepository.update(userId, updateEntity);
   }
 
-  async getTokens(userId: string, email: string) {
+  async getTokens({id, email}: Pick<User, 'id' | 'email'>) {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {
-          sub: userId,
+          sub: id,
           email,
         },
         {
@@ -84,7 +85,7 @@ export class AuthService {
       ),
       this.jwtService.signAsync(
         {
-          sub: userId,
+          sub: id,
           email,
         },
         {
@@ -98,5 +99,23 @@ export class AuthService {
       accessToken,
       refreshToken,
     };
+  }
+
+  async refreshTokens(userId: string, refreshToken: string) {
+    const user = await this.userRepository.findOneById(userId);
+    if (!user || !user.refreshToken) {
+      throw new ForbiddenException('Access Denied');
+    }
+
+    const userEntity = await new UserEntity(user);
+    const refreshTokenMatches = userEntity.validateRefreshToken(refreshToken);
+
+    if (!refreshTokenMatches) {
+      throw new ForbiddenException('Access Denied');
+    }
+    const tokens = await this.getTokens({id: user.id, email: user.email });
+    
+    await this.updateRefreshToken(user.id, tokens.refreshToken);
+    return tokens;
   }
 }
