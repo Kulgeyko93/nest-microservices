@@ -9,6 +9,7 @@ export class UserEntity implements User {
     role: Roles;
     createdAt: Date;
     updatedAt: Date;
+    refreshToken: string;
 
     constructor(user: Pick<User, 'email'| 'name' | 'role' | 'password'>) {
         this.email = user.email;
